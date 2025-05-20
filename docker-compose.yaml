@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  sql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlserver_skiShop
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=YourStrong!Pass123
+    ports:
+      - "1433:1433"
+    networks:
+      - skinet-network
+    # volumes:
+    #   - sqlserverdata:/var/opt/mssql
+
+# volumes:
+#   sqlserverdata:
+
+networks:
+  skinet-network:
+    driver: bridge

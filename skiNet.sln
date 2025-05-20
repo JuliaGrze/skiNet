@@ -1,0 +1,36 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35828.75
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API", "skiNet\API.csproj", "{CD66CF5E-7AF1-4FA0-A82E-D990C8F6A6E4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CORE", "CORE\CORE.csproj", "{802B418D-AE20-4FDC-B545-48AB94B01DF3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{011B8D0D-8FEB-4F59-9D28-EEBC61E04C9E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CD66CF5E-7AF1-4FA0-A82E-D990C8F6A6E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD66CF5E-7AF1-4FA0-A82E-D990C8F6A6E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD66CF5E-7AF1-4FA0-A82E-D990C8F6A6E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD66CF5E-7AF1-4FA0-A82E-D990C8F6A6E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{802B418D-AE20-4FDC-B545-48AB94B01DF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{802B418D-AE20-4FDC-B545-48AB94B01DF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{802B418D-AE20-4FDC-B545-48AB94B01DF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{802B418D-AE20-4FDC-B545-48AB94B01DF3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{011B8D0D-8FEB-4F59-9D28-EEBC61E04C9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{011B8D0D-8FEB-4F59-9D28-EEBC61E04C9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{011B8D0D-8FEB-4F59-9D28-EEBC61E04C9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{011B8D0D-8FEB-4F59-9D28-EEBC61E04C9E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {90616C64-7247-4711-B89C-6F980C51716A}
+	EndGlobalSection
+EndGlobal
