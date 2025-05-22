@@ -1,3 +1,4 @@
+using CORE.Interfaces;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,6 +12,9 @@ builder.Services.AddDbContext<StoreContext>(opt =>
     opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
+//Reposiotry Services
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+
 var app = builder.Build();
 
 //Midleware
@@ -19,6 +23,29 @@ app.UseStaticFiles();
 app.UseRouting();
 app.MapControllers();
 
-app.MapGet("/", () => "Hello World! eee");
+//Seed data
+try
+{
+    // Tworzy nowy "zakres us³ug" – czyli coœ w rodzaju sztucznego ¿¹dania HTTP
+    // Dlaczego to wa¿ne?
+    // StoreContext ma lifetime Scoped, czyli dzia³a per request — wiêc nie mo¿esz u¿yæ go bezpoœrednio poza kontrolerem
+    using var scopre = app.Services.CreateScope();
+
+    // Pobierasz dostêp do wszystkich zarejestrowanych us³ug w kontenerze DI w tym zakresie. To z tego services bêdziesz braæ np.StoreContext
+    var services = scopre.ServiceProvider;
+
+    // Wstrzykujesz sobie StoreContext z kontenera DI
+    var context = services.GetRequiredService<StoreContext>();
+
+    // Automatycznie tworzy lub aktualizuje bazê danych na podstawie migracji.
+    await context.Database.MigrateAsync();
+
+    //Uruchamia Twój kod seeduj¹cy
+    await StoreContextSeed.SeedAsync(context);
+}
+catch (Exception ex)
+{
+    Console.WriteLine(ex.ToString());
+}
 
 app.Run();
