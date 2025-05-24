@@ -47,6 +47,9 @@ namespace Infrastructure.Data
             if (spec.IsDistintc)
                 query = query.Distinct();
 
+            if(spec.IsPagingEnable) 
+                query = query.Skip(spec.Skip).Take(spec.Take);
+
             return query;
         }
 
@@ -68,6 +71,9 @@ namespace Infrastructure.Data
 
             if (spec.IsDistintc)
                 projectedQuery = projectedQuery.Distinct();
+            
+            if(spec.IsPagingEnable)
+                projectedQuery = projectedQuery.Skip(spec.Skip).Take(spec.Take);
 
             return projectedQuery;
         }

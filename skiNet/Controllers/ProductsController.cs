@@ -1,4 +1,5 @@
-﻿using CORE.Entities;
+﻿using API.RequestHelpers;
+using CORE.Entities;
 using CORE.Interfaces;
 using CORE.Specifications;
 using Infrastructure.Data;
@@ -7,9 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class ProductsController : ControllerBase
+    public class ProductsController : BaseApiController
     {
         private readonly IGenericRepository<Product> _genericRepository;
 
@@ -27,13 +26,11 @@ namespace API.Controllers
         /// <param name="sort">The sort order for the products. Supported values: "priceAsc", "priceDesc", "name".</param>
         /// <returns>A list of products matching the optional brand and type filters, sorted as specified.</returns>
         [HttpGet]
-        public async Task<ActionResult<IReadOnlyList<Product>>> GetProducts(string? brand, string? type, string? sort)
+        public async Task<ActionResult<IReadOnlyList<Product>>> GetProducts([FromQuery]ProductSpecificationParams productSpecification)
         {
-            var specification = new ProductSpecification(brand, type, sort); 
+            var specification = new ProductSpecification(productSpecification);
 
-            var products = await _genericRepository.ListAsyncWIithSpec(specification);
-
-            return Ok(products);
+            return await CreatePageResult<Product>(_genericRepository, specification, productSpecification.PageIndex, productSpecification.PageSize);
         }
 
         /// <summary>

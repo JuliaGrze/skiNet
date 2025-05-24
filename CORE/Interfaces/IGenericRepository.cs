@@ -90,5 +90,13 @@ namespace CORE.Interfaces
         /// <param name="id">The ID of the entity.</param>
         /// <returns>True if the entity exists; otherwise, false.</returns>
         Task<bool> Exist(int id);
+
+        /// <summary>
+        /// Counts the total number of entities that match the specified filtering criteria.
+        /// This is typically used in pagination to determine the total number of available items.
+        /// </summary>
+        /// <param name="specification">The specification that defines the filtering logic.</param>
+        /// <returns>The total count of matching entities.</returns>
+        Task<int> CountAsync(ISpecification<T> specification);
     }
 }

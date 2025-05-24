@@ -28,6 +28,12 @@ namespace CORE.Specifications
 
         public bool IsDistintc {  get; private set; }
 
+        public int Take {  get; private set; }
+
+        public int Skip { get; private set; }
+
+        public bool IsPagingEnable {  get; private set; }
+
         protected void AddOrderBy(Expression<Func<T, object>> orderByExpression)
         {
             OrderBy = orderByExpression;
@@ -46,6 +52,19 @@ namespace CORE.Specifications
             IsDistintc = true;
         }
 
+        protected void ApplyPaging(int skip, int take)
+        {
+            Skip = skip;
+            Take = take;
+            IsPagingEnable = true;
+        }
+
+        public IQueryable<T> ApplyCriteria(IQueryable<T> query)
+        {
+            if(Criteria != null)
+                query = query.Where(Criteria);
+            return query;
+        }
     }
 
     public class BaseSpecification<T, TResult> : BaseSpecification<T>, ISpecification<T, TResult>

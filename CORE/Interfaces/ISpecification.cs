@@ -41,6 +41,18 @@ namespace CORE.Interfaces
         /// </summary>
         bool IsDistintc {  get; }
 
+        int Take {  get; }
+        int Skip { get; }
+        bool IsPagingEnable { get; }
+
+        /// <summary>
+        /// Applies all applicable parts of the specification (filtering, sorting, pagination, and distinct)
+        /// to the given query.
+        /// </summary>
+        /// <param name="query">The base <see cref="IQueryable{T}"/> to apply the specification to.</param>
+        /// <returns>The modified query with filtering, sorting, distinct, and pagination logic applied.</returns>
+        IQueryable<T> ApplyCriteria(IQueryable<T> query);
+
 
     }
     // filter, sorting,... + add Projection = returrn ProductDto instead Product
