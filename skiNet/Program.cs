@@ -14,6 +14,8 @@ builder.Services.AddDbContext<StoreContext>(opt =>
 
 //Reposiotry Services
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
+//Generic Reposiotry Service
+builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
 var app = builder.Build();
 
