@@ -1,3 +1,4 @@
+using API.Middleware;
 using CORE.Interfaces;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -17,10 +18,20 @@ builder.Services.AddScoped<IProductRepository, ProductRepository>();
 //Generic Reposiotry Service
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
+//Cors
+builder.Services.AddCors();
+
 var app = builder.Build();
 
-//Midleware
+//rejestruje Twoj middleware obslugujacy bledy w potoku HTTP
+app.UseMiddleware<ExceptionMiddleware>();
 
+//Cors
+app.UseCors(x => x.AllowAnyHeader()
+                .AllowAnyMethod()
+                .WithOrigins("http://localhost:4200", "https://localhost:4200"));
+
+//Midleware
 app.UseStaticFiles();
 app.UseRouting();
 app.MapControllers();
