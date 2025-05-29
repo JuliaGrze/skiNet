@@ -1,3 +1,13 @@
+// Importuje całą bibliotekę SCSS Angular Material, jako alias mat
+@use '@angular/material' as mat;
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+// Włącza wszystkie podstawowe style Angular Material,
+@include mat.core();
+
+.container{
+    @apply mx-auto max-w-screen-2xl
+}
