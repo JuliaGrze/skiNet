@@ -12,3 +12,12 @@
     width: 32px;
     height: 32px;
 }
+
+//nawigacja
+a {
+    &.active{
+        color: #092ced;
+        border-bottom: 3px solid #092ced
+    }
+}
+

@@ -6,7 +6,7 @@ import { ShopComponent } from "./features/shop/shop.component";
 
 @Component({
     selector: 'app-root', //Nazwa znacznika HTML – <app-root> (użyty właśnie w index.html)
-    imports: [RouterOutlet, HeaderComponent, ShopComponent], //Tu podajesz inne komponenty/moduły, z których ten komponent korzysta
+    imports: [RouterOutlet, HeaderComponent], //Tu podajesz inne komponenty/moduły, z których ten komponent korzysta
     templateUrl: './app.component.html', 
     styleUrl: './app.component.scss'
 })

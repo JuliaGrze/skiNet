@@ -1,9 +1,12 @@
 <header class="border-b shadow-md p-3 w-full">
     <div class="flex items-center justify-between max-w-screen-2xl mx-auto">
-        <img src="/images/logo.png" alt="app logo" class="max-h-16">
-        <nav class="flex gap-3 my-2 uppercase text-xl">
-            <a>Home</a>
-            <a>Shop</a>
+        <img routerLink="/" src="/images/logo.png" alt="app logo" class="max-h-16">
+        <nav class="flex gap-3 my-2 uppercase text-2xl font-medium">
+            <a routerLink="/" 
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{exact: true}"
+            >Home</a>
+            <a routerLink="/shop" routerLinkActive="active">Shop</a>
             <a>Contact</a>
         </nav>
         <div class="flex gap-3 items-center">
@@ -12,7 +15,7 @@
                 <mat-icon>shopping_cart</mat-icon>
             </a>
             <button mat-stroked-button class="!rounded-md">Login</button>
-            <button mat-stroked-button class="!rounded-md">Login</button>
+            <button mat-stroked-button class="!rounded-md">Register</button>
         </div>
     </div>
 </header>
