@@ -36,3 +36,19 @@
 .mdc-notched-outline__notch{
   border-right-style: none !important;
 }
+
+
+//snackbar - ten toast z dolu
+//error - snackbar
+.mat-mdc-snack-bar-container.snack-error {
+  --mdc-snackbar-container-color: red;      
+  --mat-snackbar-button-color: #fff;
+  --mat-snackbar-supporting-text-color: #fff;
+}
+
+//success - snackbar
+.mat-mdc-snack-bar-container.snack-success {
+  --mdc-snackbar-container-color: green;      
+  --mat-snackbar-button-color: #fff;
+  --mat-snackbar-supporting-text-color: #fff;
+}
