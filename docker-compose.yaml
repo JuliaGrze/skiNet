@@ -11,11 +11,22 @@ services:
       - "1433:1433"
     networks:
       - skinet-network
-    # volumes:
-    #   - sqlserverdata:/var/opt/mssql
+    volumes:
+      - sqlserverdata:/var/opt/mssql
 
-# volumes:
-#   sqlserverdata:
+  redis:
+    image: redis:7
+    container_name: redis_skiShop
+    ports:
+      - "6379:6379"
+    networks:
+      - skinet-network
+    volumes:
+      - redisdata:/data
+
+volumes:
+  sqlserverdata:
+  redisdata:
 
 networks:
   skinet-network:
