@@ -19,7 +19,7 @@ namespace Infrastructure.Services
             _database = redis.GetDatabase();
         }
 
-        public async Task<bool> DeleteTaskAsync(string key)
+        public async Task<bool> DeleteCartAsync(string key)
         {
             // Removes the cart with the given key from Redis
             return await _database.KeyDeleteAsync(key);

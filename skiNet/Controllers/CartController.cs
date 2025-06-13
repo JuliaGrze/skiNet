@@ -43,7 +43,7 @@ namespace API.Controllers
         [HttpDelete]
         public async Task<ActionResult> DeleteCart(string id)
         {
-            var result = await _cartService.DeleteTaskAsync(id);
+            var result = await _cartService.DeleteCartAsync(id);
             if (!result) return BadRequest("Problem deleting cart");
             return Ok();
         }

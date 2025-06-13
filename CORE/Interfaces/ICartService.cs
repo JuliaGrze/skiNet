@@ -31,7 +31,7 @@ namespace CORE.Interfaces
         /// </summary>
         /// <param name="key">The unique identifier for the shopping cart to delete.</param>
         /// <returns>True if deletion was successful; otherwise, false.</returns>
-        Task<bool> DeleteTaskAsync(string key);
+        Task<bool> DeleteCartAsync(string key);
 
     }
 }
