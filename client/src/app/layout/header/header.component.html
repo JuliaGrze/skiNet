@@ -14,8 +14,15 @@
             <a routerLink="/cart" routerLinkActive="active" matBadge={{cartService.itemCount()}} matBadgeSize="large" class="custom-badge mt-2 mr-2">
                 <mat-icon>shopping_cart</mat-icon>
             </a>
-            <button mat-stroked-button class="!rounded-md">Login</button>
-            <button mat-stroked-button class="!rounded-md">Register</button>
+            @if (accountService.currentUser() == null) {      
+                <button routerLink="/account/login" mat-stroked-button class="!rounded-md">Login</button>
+                <button routerLink="/account/register" mat-stroked-button class="!rounded-md">Register</button>
+            }@else{
+                <button mat-button [matMenuTriggerFor]="menu">
+                    <mat-icon>arrow_drop_down</mat-icon>
+                    <span>{{accountService.currentUser()?.email}}</span>
+                </button>
+            }
         </div>
     </div>
 </header>
@@ -23,3 +30,25 @@
 @if(busyService.loading){
     <mat-progress-bar mode="indeterminate" class="fixed top-20 z-50"></mat-progress-bar>
 }
+
+<mat-menu #menu="matMenu" class="px-5">
+    <!-- Cart -->
+    <button mat-menu-item class="px-3" routerLink="/cart">
+        <mat-icon>shopping_cart</mat-icon>
+        My cart
+    </button>
+    <!-- Orders history -->
+    <button mat-menu-item class="px-3" routerLink="/cart">
+        <mat-icon>history</mat-icon>
+        My orders
+    </button>
+
+    <!-- Linia -->
+    <mat-divider></mat-divider>
+
+    <!-- Logout -->
+    <button mat-menu-item class="px-3" routerLink="/cart" (click)="logOut()">
+        <mat-icon>logout</mat-icon>
+        Logout
+    </button>
+</mat-menu>

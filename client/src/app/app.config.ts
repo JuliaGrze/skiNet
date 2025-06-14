@@ -2,10 +2,11 @@ import { ApplicationConfig, inject, provideAppInitializer, provideZoneChangeDete
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { errorInterceptor } from './coere/interceptors/error.interceptor';
-import { loadingInterceptor } from './coere/interceptors/loading.interceptor';
+import { errorInterceptor } from './core/interceptors/error.interceptor';
+import { loadingInterceptor } from './core/interceptors/loading.interceptor';
 import { InitService } from './core/services/init.service';
 import { firstValueFrom, lastValueFrom } from 'rxjs';
+import { authInterceptor } from './core/interceptors/auth.interceptor';
 
 export const appConfig: ApplicationConfig = {
   //eventCoalescing: true – optymalizacja: łączy zdarzenia razem, by zmniejszyć ilość wykrytych zmian i przyspieszyć renderowanie
@@ -14,7 +15,7 @@ export const appConfig: ApplicationConfig = {
     //routes to tablica tras zdefiniowana np. w app.routes.ts
 
     // rejestruje wszystkie potrzebne zależności Angulara, aby móc używać HttpClient w aplikacji.
-    provideHttpClient(withInterceptors([errorInterceptor, loadingInterceptor])),
+    provideHttpClient(withInterceptors([errorInterceptor, loadingInterceptor, authInterceptor])),
 
     InitService,
     provideAppInitializer(() => {
