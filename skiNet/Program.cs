@@ -1,4 +1,5 @@
 using API.Middleware;
+using CORE.Entities;
 using CORE.Interfaces;
 using Infrastructure.Data;
 using Infrastructure.Services;
@@ -33,6 +34,11 @@ builder.Services.AddSingleton<IConnectionMultiplexer>(config =>
 //Cart Service
 builder.Services.AddSingleton<ICartService, CartService>();
 
+//Identity
+builder.Services.AddAuthorization();
+builder.Services.AddIdentityApiEndpoints<AppUser>()
+    .AddEntityFrameworkStores<StoreContext>();
+
 var app = builder.Build();
 
 //rejestruje Twoj middleware obslugujacy bledy w potoku HTTP
@@ -41,12 +47,19 @@ app.UseMiddleware<ExceptionMiddleware>();
 //Cors
 app.UseCors(x => x.AllowAnyHeader()
                 .AllowAnyMethod()
-                .WithOrigins("http://localhost:4200", "https://localhost:4200"));
+                .WithOrigins("http://localhost:4200", "https://localhost:4200")
+                .AllowCredentials()); //allow to cookies from client
 
 //Midleware
 app.UseStaticFiles();
 app.UseRouting();
 app.MapControllers();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+//Identity
+app.MapGroup("api").MapIdentityApi<AppUser>(); //api/login
 
 //Seed data
 try
