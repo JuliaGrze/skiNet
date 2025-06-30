@@ -15,16 +15,13 @@ namespace Infrastructure.Services
     {
         private readonly IConfiguration _configuration;
         private readonly ICartService _cartService;
-        private readonly IGenericRepository<Product> _productRepository;
-        private readonly IGenericRepository<DeliveryMethod> _deliveryMethodRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public PaymentService(IConfiguration configuration, ICartService cartService,
-           IGenericRepository<Product> productRepository, IGenericRepository<DeliveryMethod> deliveryMethodRepository)
+        public PaymentService(IConfiguration configuration, ICartService cartService, IUnitOfWork unitOfWork)
         {
             _configuration = configuration;
             _cartService = cartService;
-            _productRepository = productRepository;
-            _deliveryMethodRepository = deliveryMethodRepository;
+            _unitOfWork = unitOfWork;
 
             StripeConfiguration.ApiKey = _configuration["StripeSettings:SecretKey"];
         }
@@ -42,7 +39,7 @@ namespace Infrastructure.Services
             // Jeśli wybrano metodę dostawy, pobierz jej cenę
             if (cart.DeliveryMethodId.HasValue)
             {
-                var deliveryMethod = await _deliveryMethodRepository.GetByIdAsync((int)cart.DeliveryMethodId);
+                var deliveryMethod = await _unitOfWork.Repository<DeliveryMethod>().GetByIdAsync((int)cart.DeliveryMethodId);
 
                 if (deliveryMethod == null)
                     return null; // Jeśli metoda dostawy nie istnieje, zakończ
@@ -53,7 +50,7 @@ namespace Infrastructure.Services
             // Zaktualizuj ceny produktów w koszyku (jeśli się zmieniły od czasu dodania do koszyka)
             foreach (var item in cart.Items)
             {
-                var productItem = await _productRepository.GetByIdAsync(item.ProductId);
+                var productItem = await _unitOfWork.Repository<Product>().GetByIdAsync(item.ProductId);
 
                 if (productItem == null) return null;
 

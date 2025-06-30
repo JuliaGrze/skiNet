@@ -34,6 +34,10 @@ namespace CORE.Specifications
 
         public bool IsPagingEnable {  get; private set; }
 
+        public List<Expression<Func<T, object>>> Includes { get; } = [];
+
+        public List<string> IncludesString { get; } = [];
+
         protected void AddOrderBy(Expression<Func<T, object>> orderByExpression)
         {
             OrderBy = orderByExpression;
@@ -64,6 +68,16 @@ namespace CORE.Specifications
             if(Criteria != null)
                 query = query.Where(Criteria);
             return query;
+        }
+
+        protected void AddInclude(Expression<Func<T, object>> includeExpression)
+        {
+            Includes.Add(includeExpression);
+        }
+
+        protected void AddInclude(string includeString)
+        {
+            IncludesString.Add(includeString);
         }
     }
 

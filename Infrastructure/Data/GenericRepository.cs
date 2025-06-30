@@ -72,11 +72,6 @@ namespace Infrastructure.Data
             _context.Set<T>().Remove(entity);
         }
 
-        public async Task<bool> SaveAllAsync()
-        {
-            return await _context.SaveChangesAsync() > 0;
-        }
-
         public void Update(T entity)
         {
             //Attach causes the entity to be added to the context (DbContext) in the Unchanged state

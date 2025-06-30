@@ -10,11 +10,11 @@ namespace API.Controllers
 {
     public class ProductsController : BaseApiController
     {
-        private readonly IGenericRepository<Product> _genericRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public ProductsController(IGenericRepository<Product> genericRepository)
+        public ProductsController(IUnitOfWork unitOfWork)
         {
-            _genericRepository = genericRepository;
+            _unitOfWork = unitOfWork;
         }
 
 
@@ -30,7 +30,7 @@ namespace API.Controllers
         {
             var specification = new ProductSpecification(productSpecification);
 
-            return await CreatePageResult<Product>(_genericRepository, specification, productSpecification.PageIndex, productSpecification.PageSize);
+            return await CreatePageResult<Product>(_unitOfWork.Repository<Product>(), specification, productSpecification.PageIndex, productSpecification.PageSize);
         }
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace API.Controllers
         [HttpGet("{id:int}")] //api/products/2
         public async Task<ActionResult<Product>> GetProduct(int id)
         {
-            var product = await _genericRepository.GetByIdAsync(id);
+            var product = await _unitOfWork.Repository<Product>().GetByIdAsync(id);
 
             if (product == null)
                 return NotFound(); //status - 404 Not Found
@@ -59,9 +59,9 @@ namespace API.Controllers
         [HttpPost]
         public async Task<ActionResult<Product>> CreateProduct(Product product)
         {
-            _genericRepository.Add(product); //no need Async method because AddAsync doesn't really do I/O - it just prepares the entity
+            _unitOfWork.Repository<Product>().Add(product); //no need Async method because AddAsync doesn't really do I/O - it just prepares the entity
 
-            if (await _genericRepository.SaveAllAsync())
+            if (await _unitOfWork.Complete())
                 return CreatedAtAction("GetProduct", new { id = product.Id }, product); //HTTP 201 Created
             //CreatedAtAction(actionName, routeValues, value)
             //ActionName: nazwa metody (akcji), która może pobrać nowo utworzony zasób — w tym przypadku "GetProduct" - metoda wyzej
@@ -88,9 +88,9 @@ namespace API.Controllers
                 return NotFound("Product not found");
 
             //This product object has been modified and should be updated in the database on the next SaveChanges()
-            _genericRepository.Update(product);
+            _unitOfWork.Repository<Product>().Update(product);
 
-            if(await _genericRepository.SaveAllAsync())
+            if(await _unitOfWork.Complete())
                 return NoContent();
 
             return BadRequest("Problem updating product");
@@ -104,14 +104,14 @@ namespace API.Controllers
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> DeleteProduct(int id)
         {
-            var product = await _genericRepository.GetByIdAsync(id);
+            var product = await _unitOfWork.Repository<Product>().GetByIdAsync(id);
 
             if (product == null)
                 return NotFound();
 
-            _genericRepository.Remove(product);
+            _unitOfWork.Repository<Product>().Remove(product);
 
-            if (await _genericRepository.SaveAllAsync())
+            if (await _unitOfWork.Complete())
                 return NoContent();
 
             return StatusCode(500, "Problem deleting the product");
@@ -125,7 +125,7 @@ namespace API.Controllers
         public async Task<ActionResult<IReadOnlyList<string>>> GetBrands()
         {
             var specification = new BrandListSpecifications();
-            return Ok( await _genericRepository.ListAsyncWithSpec<string>(specification));
+            return Ok( await _unitOfWork.Repository<Product>().ListAsyncWithSpec<string>(specification));
         }
 
 
@@ -137,12 +137,12 @@ namespace API.Controllers
         public async Task<ActionResult<IReadOnlyList<string>>> GetTypes()
         {
             var specifications = new TypeListSpecification();
-            return Ok(await _genericRepository.ListAsyncWithSpec<string>(specifications));
+            return Ok(await _unitOfWork.Repository<Product>().ListAsyncWithSpec<string>(specifications));
         }
 
         private async Task<bool> ProductExistsAsync(int id)
         {
-            return await _genericRepository.Exist(id);
+            return await _unitOfWork.Repository<Product>().Exist(id);
         }
 
     }

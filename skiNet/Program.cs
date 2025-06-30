@@ -20,6 +20,8 @@ builder.Services.AddDbContext<StoreContext>(opt =>
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 //Generic Reposiotry Service
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+//Unit of work inject
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 //Cors
 builder.Services.AddCors();

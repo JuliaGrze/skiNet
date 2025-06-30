@@ -1,5 +1,6 @@
 ﻿using CORE.Entities;
 using CORE.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,6 +50,10 @@ namespace Infrastructure.Data
 
             if(spec.IsPagingEnable) 
                 query = query.Skip(spec.Skip).Take(spec.Take);
+
+            //Includes another entitie
+            query = spec.Includes.Aggregate(query, (current, include) => current.Include(include));
+            query = spec.IncludesString.Aggregate(query, (current, include) => current.Include(include));
 
             return query;
         }

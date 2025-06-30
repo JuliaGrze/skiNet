@@ -79,12 +79,6 @@ namespace CORE.Interfaces
         void Remove(T entity);
 
         /// <summary>
-        /// Saves all changes made in the context.
-        /// </summary>
-        /// <returns>True if at least one change was saved; otherwise, false.</returns>
-        Task<bool> SaveAllAsync();
-
-        /// <summary>
         /// Checks whether an entity with the given ID exists.
         /// </summary>
         /// <param name="id">The ID of the entity.</param>

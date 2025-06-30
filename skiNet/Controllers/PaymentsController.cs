@@ -9,11 +9,11 @@ namespace API.Controllers
     public class PaymentsController : BaseApiController
     {
         private readonly IPaymentService _paymentService;
-        private readonly IGenericRepository<DeliveryMethod> _deliveryMethodsRepository;
-        public PaymentsController(IPaymentService paymentService, IGenericRepository<DeliveryMethod> deliveryMethodsRepository)
+        private readonly IUnitOfWork _unitOfWork;
+        public PaymentsController(IPaymentService paymentService, IUnitOfWork unitOfWork)
         {
             _paymentService = paymentService;
-            _deliveryMethodsRepository = deliveryMethodsRepository;
+            _unitOfWork = unitOfWork;
         }
 
 
@@ -40,7 +40,7 @@ namespace API.Controllers
         [HttpGet("delivery-methods")]
         public async Task<ActionResult<IReadOnlyList<DeliveryMethod>>> GetDeliveryMethods()
         {
-            return Ok(await _deliveryMethodsRepository.GetListAsync());
+            return Ok(await _unitOfWork.Repository<DeliveryMethod>().GetListAsync());
         }
     }
 }

@@ -37,6 +37,20 @@ namespace CORE.Interfaces
         Expression<Func<T, object>>? OrderByDescedning { get; }
 
         /// <summary>
+        /// Gets a list of related entities to include in the query (using expression syntax).
+        /// These expressions are translated to .Include() calls in Entity Framework, allowing eager loading of related data.
+        /// Example: Include order items with an order → o => o.OrderItems
+        /// </summary>
+        List<Expression<Func<T, object>>> Includes { get; }
+
+        /// <summary>
+        /// Gets a list of related nested entities to include in the query using string paths.
+        /// These strings are used for ThenInclude-style deep loading in Entity Framework.
+        /// Example: Include product inside order items → "OrderItems.Product"
+        /// </summary>
+        List<string> IncludesString { get; } //for ThenInclude
+
+        /// <summary>
         /// stores uniqueness
         /// </summary>
         bool IsDistintc {  get; }
