@@ -11,5 +11,6 @@ namespace CORE.Interfaces
     {
         //Metoda tworzy nowy PaymentIntent (zamiar płatności) albo aktualizuje istniejący, bazując na koszyku użytkownika o ID cartId
         Task<ShoppingCart> CreateOrUpdatePaymentIntent(string cartId);
+
     }
 }

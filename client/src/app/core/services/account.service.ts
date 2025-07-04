@@ -3,6 +3,7 @@ import { environment } from '../../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Address, User } from '../../shared/models/user';
 import { map, tap } from 'rxjs';
+import { SignalrService } from './signalr.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +11,7 @@ import { map, tap } from 'rxjs';
 export class AccountService {
   baseUrl = environment.apiUrl
   private http = inject(HttpClient)
+  private signalrService = inject(SignalrService)
   currentUser = signal<User | null>(null)
 
   //Login
@@ -20,6 +22,8 @@ export class AccountService {
     return this.http.post<User>(this.baseUrl + 'login',
       values, //To dane formularza logowania, np. { email, password }
       { params }
+    ).pipe(
+      tap(() => this.signalrService.createHubConnection())
     )   
   }
 
@@ -39,7 +43,9 @@ export class AccountService {
   }
 
   logout(){
-    return this.http.post(this.baseUrl + 'account/logout', {})
+    return this.http.post(this.baseUrl + 'account/logout', {}).pipe(
+      tap(() => this.signalrService.stopHubConnection())
+    )
   }
 
   updateAddress(address: Address){

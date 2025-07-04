@@ -1,4 +1,5 @@
 using API.Middleware;
+using API.SignalR;
 using CORE.Entities;
 using CORE.Interfaces;
 using Infrastructure.Data;
@@ -44,6 +45,9 @@ builder.Services.AddIdentityApiEndpoints<AppUser>()
 //Payment Service
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 
+//SignalR - WebSignal to DI
+builder.Services.AddSignalR();
+
 var app = builder.Build();
 
 //rejestruje Twoj middleware obslugujacy bledy w potoku HTTP
@@ -65,6 +69,9 @@ app.UseAuthorization();
 
 //Identity
 app.MapGroup("api").MapIdentityApi<AppUser>(); //api/login
+
+//Map endpoint for Hub
+app.MapHub<NotificationHub>("/hub/notifications");
 
 //Seed data
 try

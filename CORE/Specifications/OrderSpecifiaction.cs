@@ -24,5 +24,13 @@ namespace CORE.Specifications
             AddInclude("OrderItems");
             AddInclude("DeliveryMethod");
         }
+
+        //filtruje zamówienia po PaymentIntentId
+        public OrderSpecifiaction(string paymentIntentId, bool isPaymentIntent) 
+            : base(x => x.PaymentIntentId == paymentIntentId) 
+        {
+            AddInclude("OrderItems");
+            AddInclude("DeliveryMethod");
+        }
     }
 }

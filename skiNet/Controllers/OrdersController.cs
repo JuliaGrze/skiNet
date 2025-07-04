@@ -19,6 +19,7 @@ namespace API.Controllers
             _cartService = cartService;
             _unitOfWork = unitOfWork;
         }
+        [HttpPost]
         public async Task<ActionResult<Order>> CreateOrder(CreateOrderDto orderDto)
         {
             //Pobiera e-mail zalogowanego użytkownika z tokena JWT

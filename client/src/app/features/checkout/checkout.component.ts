@@ -12,7 +12,8 @@ import { SnackbarService } from '../../core/services/snackbar.service';
 import {MatCheckboxChange, MatCheckboxModule} from '@angular/material/checkbox';
 import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { Address } from '../../shared/models/user';
-import { firstValueFrom } from 'rxjs';
+import { OrderToCreate, ShippingAddress } from '../../shared/models/order';
+import { catchError, firstValueFrom } from 'rxjs';
 import { AccountService } from '../../core/services/account.service';
 import { CheckoutDeliveryComponent } from "./checkout-delivery/checkout-delivery.component";
 import { CheckoutReviewComponent } from "./checkout-review/checkout-review.component";
@@ -20,6 +21,7 @@ import { CartService } from '../../core/services/cart.service';
 import { CurrencyPipe, JsonPipe } from '@angular/common';
 import { signal } from '@angular/core';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { OrderService } from '../../core/services/order.service';
 
 @Component({
   selector: 'app-checkout',
@@ -46,6 +48,7 @@ export class CheckoutComponent implements OnInit{
   private snackbar = inject(SnackbarService)
   private accountService = inject(AccountService)
   private router = inject(Router)
+  private orderService = inject(OrderService)
   cartService = inject(CartService)
   addressElement?: StripeAddressElement
   paymentElement?: StripePaymentElement
@@ -127,7 +130,7 @@ export class CheckoutComponent implements OnInit{
     // i np w 1 zaznaczył checkbox "Save as default address"  
     if(event.selectedIndex === 1){
       if(this.saveAddress){
-        const address = await this.getAddressFromStripeAddress()
+        const address = await this.getAddressFromStripeAddress() as Address
         address && await firstValueFrom(this.accountService.updateAddress(address))
       }
     }
@@ -141,7 +144,8 @@ export class CheckoutComponent implements OnInit{
     }
   }
 
-  // potwierdza płatność przez Stripe
+  // potwierdza płatność przez Stripe, Tworzy zamówienie w backendzie oraz
+  // Czyści koszyk i przekierowuje użytkownika na stronę sukcesu
   async confirmPayment(stepper: MatStepper){
     this.loading = true
     try{
@@ -150,13 +154,30 @@ export class CheckoutComponent implements OnInit{
         // Stripe wysyła dane na swoje serwery i wykonuje faktyczną płatność kartą na podstawie tokena
         const result = await this.stripeService.confirmPayemnt(this.confirmationtoken)
 
-        if(result.error){
+        //sprawdza czy płatnośc sie udala
+        if(result.paymentIntent?.status === 'succeeded'){
+          //Tworzy obiekt OrderToCreate — zbiera dane z koszyka, adresu i karty
+          const order = await this.createOrderModel();
+          
+          // Wysyła utworzony obiekt order do backendu (POST /orders) i czeka na odpowiedź
+          const orderResult = await firstValueFrom(this.orderService.createOrder(order))
+          //sprawdzamy czy zamowienie zostalo utworzone
+          console.log(orderResult)
+          if(orderResult){
+            this.orderService.orderComplete = true
+            this.cartService.deleteCart()
+            this.cartService.selectedDelivery.set(null)
+            this.router.navigateByUrl('/checkout/success')
+          } // Jeśli backend nie zwrócił zamówienia → rzuca wyjątek.
+          else{
+            throw new Error('Order creation failed')
+          }
+        } // Jeśli Stripe zwrócił błąd → pokazuje komunikat
+        else if(result.error)
           throw new Error(result.error.message)
-        }else{
-          this.cartService.deleteCart()
-          this.cartService.selectedDelivery.set(null)
-          this.router.navigateByUrl('/checkout/success')
-        }
+        // Jeśli cokolwiek innego poszło nie tak → ogólny błąd
+        else
+          throw new Error('Something went wrong')
       }
     } catch(error: any){
       this.snackbar.error(error.message || 'Spmething went wrong')
@@ -166,13 +187,39 @@ export class CheckoutComponent implements OnInit{
     }
   }
 
+  //buduje obiekt OrderToCreate, czyli przygotowuje wszystkie dane, które trzeba wysłać do backendu (API), 
+  // aby utworzyć zamówienie po udanej płatności Stripe.
+  private async createOrderModel() : Promise<OrderToCreate> {
+    //zwraca lokalnie przechowywany obiekt koszyka.
+    const cart = this.cartService.cart()
+    const shippingAddress = await this.getAddressFromStripeAddress() as ShippingAddress
+    //Po zakończonej płatności Stripe zwraca confirmationtoken zawierający podgląd metody płatności
+    const card = this.confirmationtoken?.payment_method_preview.card;
+
+    if(!cart?.id || !cart.deliveryMethodId || !card || !shippingAddress)
+      throw new Error('Problem creating order')
+
+    return {
+      cartId: cart.id,
+      paymentSummary: {
+        last4: Number(card.last4),
+        brand: card.brand,
+        expMonth: card.exp_month,
+        expYear: card.exp_year
+      },
+      deliveryMethodId: cart.deliveryMethodId,
+      shippingAddress
+    }
+  }
+
   //Gets the address data that the user entered in the Stripe AddressElement form
-  private async getAddressFromStripeAddress() :Promise<Address | null>{
+  private async getAddressFromStripeAddress() :Promise<Address | ShippingAddress | null>{
     const result = await this.addressElement?.getValue()
     const address = result?.value.address
 
     if(address){
       return{
+        name: result.value.name,
         line1: address.line1,
         line2: address.line2 || undefined,
         city: address.city,

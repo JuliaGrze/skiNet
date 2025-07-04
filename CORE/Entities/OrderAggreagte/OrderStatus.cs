@@ -13,7 +13,8 @@ namespace CORE.Entities.OrderAggreagte
     {
         Pending,
         PaymentReceive,
-        PaymentFailed
+        PaymentFailed,
+        PaymentMismatch
 
     }
 }

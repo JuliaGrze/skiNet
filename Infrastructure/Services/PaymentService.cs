@@ -94,9 +94,10 @@ namespace Infrastructure.Services
 
                 try
                 {
+
                     intent = await service.UpdateAsync(cart.PaymentIntentId, options);
                 }
-                catch (StripeException ex) when (ex.Message.Contains("No such payment_intent"))
+                catch (StripeException ex) when (ex.Message.Contains    ("No such payment_intent"))
                 {
                     // Jeśli Stripe nie zna ID – tworzymy nowy intent od zera
                     var createOptions = new PaymentIntentCreateOptions
