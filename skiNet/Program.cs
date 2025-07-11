@@ -60,6 +60,7 @@ app.UseCors(x => x.AllowAnyHeader()
                 .AllowCredentials()); //allow to cookies from client
 
 //Midleware
+app.UseDefaultFiles();
 app.UseStaticFiles();
 app.UseRouting();
 app.MapControllers();
@@ -72,6 +73,8 @@ app.MapGroup("api").MapIdentityApi<AppUser>(); //api/login
 
 //Map endpoint for Hub
 app.MapHub<NotificationHub>("/hub/notifications");
+//Przkieruje niepoprawne ¿adanie na ponizszy endpoint
+app.MapFallbackToController("Index", "Fallback");
 
 //Seed data
 try

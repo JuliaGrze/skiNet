@@ -29,4 +29,10 @@
     <Folder Include="RequestHelpers\" />
   </ItemGroup>
 
+	<ItemGroup>
+		<Content Include="Data/SeedData/**">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+
 </Project>
