@@ -14,7 +14,7 @@ namespace CORE.Entities.OrderAggreagte
         Pending,
         PaymentReceive,
         PaymentFailed,
-        PaymentMismatch
-
+        PaymentMismatch,
+        Refunded
     }
 }

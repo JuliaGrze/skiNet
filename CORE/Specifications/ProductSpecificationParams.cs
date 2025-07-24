@@ -7,20 +7,11 @@ using System.Threading.Tasks;
 namespace CORE.Specifications
 {
     //Represents the input data from the query string, i.e. what the user provided in the URL.
-    public class ProductSpecificationParams
+    public class ProductSpecificationParams : PagingParams
     {
         private List<String> _brands = [];
         private List<String> _types = [];
 
-        private const int MaxPageSize = 50;
-        public int PageIndex { get; set; } = 1; //which page user want to see
-
-        private int _pageSize = 6; //number of elements per page
-        public int PageSize 
-        { 
-            get => _pageSize;
-            set => _pageSize = (value > MaxPageSize) ? MaxPageSize : value; 
-        }
 
         public List<string> Brands 
         { 

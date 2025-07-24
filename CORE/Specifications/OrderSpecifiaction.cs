@@ -32,5 +32,30 @@ namespace CORE.Specifications
             AddInclude("OrderItems");
             AddInclude("DeliveryMethod");
         }
+
+        //Pozwala pobierać zamówienia według statusu, ze stronicowaniem i sortowaniem.
+        public OrderSpecifiaction(OrderSpecParams specParams) 
+            : base(x => string.IsNullOrEmpty(specParams.Status) || x.Status == ParseStatus(specParams.Status))
+        {
+            AddInclude("OrderItems");
+            AddInclude("DeliveryMethod");
+            ApplyPaging(specParams.PageSize * (specParams.PageIndex - 1), specParams.PageSize);
+            AddOrderByDescending(x => x.OrderDate);
+        }
+
+        //Pobiera jedno konkretne zamówienie po jego ID (np. do szczegółów zamówienia)
+        public OrderSpecifiaction(int id) : base(x => x.Id == id) 
+        {
+            AddInclude("OrderItems");
+            AddInclude("DeliveryMethod");
+        }
+
+        //Służy do konwersji tekstowego statusu (np. „paid”) na enum OrderStatus (np. OrderStatus.Paid)
+        private static OrderStatus? ParseStatus(string status)
+        {
+            if (Enum.TryParse<OrderStatus>(status, true, out var result))  
+                return result ;
+            return null ;
+        }  
     }
 }

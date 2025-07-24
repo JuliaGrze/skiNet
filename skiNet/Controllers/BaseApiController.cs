@@ -11,6 +11,7 @@ namespace API.Controllers
     [ApiController]
     public class BaseApiController : ControllerBase
     {
+        //zwraca encje z bazdy danych odpowiednio zpaginowana
         protected async Task<ActionResult> CreatePageResult<T>(IGenericRepository<T> repository, 
             ISpecification<T> spec, int pageIndex, int pageSize) where T : BaseEntity
         {
@@ -18,6 +19,21 @@ namespace API.Controllers
             var count = await repository.CountAsync(spec);
 
             var pagination = new Pagination<T>(pageIndex, pageSize, count, items);
+
+            return Ok(pagination);
+        }
+
+        //zwraca dto danych odpowiednio zpaginowana
+        protected async Task<ActionResult> CreatePageResult<T, TDto>(IGenericRepository<T> repository,
+            ISpecification<T> spec, int pageIndex, int pageSize, Func<T, TDto> toDto) 
+            where T : BaseEntity, IDtoConvertiable
+        {
+            var items = await repository.ListAsyncWIithSpec(spec);
+            var count = await repository.CountAsync(spec);
+
+            var dtoItems = items.Select(toDto).ToList();
+
+            var pagination = new Pagination<TDto>(pageIndex, pageSize, count, dtoItems);
 
             return Ok(pagination);
         }

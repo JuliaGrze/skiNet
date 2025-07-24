@@ -4,6 +4,7 @@ using CORE.Entities;
 using CORE.Interfaces;
 using Infrastructure.Data;
 using Infrastructure.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
 
@@ -40,6 +41,7 @@ builder.Services.AddSingleton<ICartService, CartService>();
 //Identity
 builder.Services.AddAuthorization();
 builder.Services.AddIdentityApiEndpoints<AppUser>()
+    .AddRoles<IdentityRole>() // Add roles to Identity
     .AddEntityFrameworkStores<StoreContext>();
 
 //Payment Service
@@ -89,12 +91,14 @@ try
 
     // Wstrzykujesz sobie StoreContext z kontenera DI
     var context = services.GetRequiredService<StoreContext>();
+    //Pobierz UserManager<AppUser>
+    var userManager = services.GetRequiredService<UserManager<AppUser>>();
 
     // Automatycznie tworzy lub aktualizuje bazê danych na podstawie migracji.
     await context.Database.MigrateAsync();
 
     //Uruchamia Twój kod seeduj¹cy
-    await StoreContextSeed.SeedAsync(context);
+    await StoreContextSeed.SeedAsync(context, userManager);
 }
 catch (Exception ex)
 {

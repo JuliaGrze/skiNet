@@ -1,4 +1,5 @@
 ﻿using CORE.Entities;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,8 +11,23 @@ namespace Infrastructure.Data
 {
     public class StoreContextSeed
     {
-        public static async Task SeedAsync(StoreContext context)
+        public static async Task SeedAsync(StoreContext context, UserManager<AppUser> userManager)
         {
+            //sprawdzmay czy mamy admina w bazie danych
+            if (!userManager.Users.Any(x => x.UserName == "admin@test.com"))
+            {
+                var user = new AppUser
+                {
+                    UserName = "admin@test.com",
+                    Email = "admin@test.com"
+                };
+
+                //zapisanie admina do bazy danych
+                await userManager.CreateAsync(user, "Pa$$w0rd");
+                //Nadanie roli Admin
+                await userManager.AddToRoleAsync(user, "Admin");
+            }  
+
             //To daje folder, gdzie jest aktualny plik DLL aplikacji
             var path = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
 

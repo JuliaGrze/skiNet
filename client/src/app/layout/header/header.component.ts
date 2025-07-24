@@ -9,6 +9,7 @@ import { CartService } from '../../core/services/cart.service';
 import { AccountService } from '../../core/services/account.service';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
+import { IsAdminDirective } from '../../shared/directives/is-admin.directive';
 
 @Component({
   selector: 'app-header', //Nazwa znacznika HTML, którego użyjesz w innych komponentach: <app-header>
@@ -21,7 +22,8 @@ import { MatDividerModule } from '@angular/material/divider';
     MatProgressBar,
     MatMenuModule,
     MatButtonModule,
-    MatDividerModule
+    MatDividerModule,
+    IsAdminDirective
   ],
   templateUrl: './header.component.html', //Ścieżka do pliku HTML (header.component.html
   styleUrl: './header.component.scss'

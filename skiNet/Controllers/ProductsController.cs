@@ -3,6 +3,7 @@ using CORE.Entities;
 using CORE.Interfaces;
 using CORE.Specifications;
 using Infrastructure.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -56,6 +57,7 @@ namespace API.Controllers
         /// <param name="product">The product to create</param>
         /// <returns>The crated product</returns>
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult<Product>> CreateProduct(Product product)
         {
@@ -78,6 +80,7 @@ namespace API.Controllers
         /// <param name="product">The updated product data.</param>
         /// <returns>204 No Content if successful; 400 or 404 if invalid.</returns>
 
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id:int}")]
         public async Task<ActionResult> UpdateProduct(int id, Product product)
         {
@@ -101,6 +104,8 @@ namespace API.Controllers
         /// </summary>
         /// <param name="id">The ID of the product to delete</param>
         /// <returns>204 No Content if successful, 404 Not found if product wasnt find</returns>
+        
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> DeleteProduct(int id)
         {

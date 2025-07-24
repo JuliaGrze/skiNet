@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CORE.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +10,7 @@ namespace CORE.Entities.OrderAggreagte
     /// <summary>
     /// Entity representing a customer's order, including items, shipping, payment, and status details.
     /// </summary>
-    public class Order : BaseEntity
+    public class Order : BaseEntity, IDtoConvertiable
     {
         public DateTime OrderDate { get; set; } = DateTime.UtcNow;
         public required string BuyerEmail { get; set; }

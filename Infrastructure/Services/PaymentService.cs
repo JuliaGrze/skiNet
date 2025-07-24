@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.WebRequestMethods;
 using Product = CORE.Entities.Product;
 
 namespace Infrastructure.Services
@@ -119,5 +120,23 @@ namespace Infrastructure.Services
             return cart;
         }
 
+        //zwrot pieniedzy do klienta, zwraca status operacji zwracania pieniedzy
+        public async Task<string> RefundPayment(string paymentIntentId)
+        {
+            // Tworzymy opcje do refundacji, wskazując ID płatności (paymentIntentId),
+            // czyli identyfikator operacji płatniczej, którą chcemy zwrócić klientowi
+            var refundOptions = new RefundCreateOptions
+            {
+                PaymentIntent = paymentIntentId
+            };
+
+            // Tworzymy instancję serwisu Stripe odpowiedzialnego za zwroty płatności (RefundService)
+            var refundService = new RefundService();
+            // To zleca Stripe wykonanie zwrotu pieniędzy
+            var result = await refundService.CreateAsync(refundOptions);
+
+            // Zwracamy status operacji zwrotu, np. "succeeded"(sukces), "pending", "failed" itp.
+            return result.Status;
+        }
     }
 }
