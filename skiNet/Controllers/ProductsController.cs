@@ -26,6 +26,7 @@ namespace API.Controllers
         /// <param name="type">The type to filter products by (optional).</param>
         /// <param name="sort">The sort order for the products. Supported values: "priceAsc", "priceDesc", "name".</param>
         /// <returns>A list of products matching the optional brand and type filters, sorted as specified.</returns>
+        [Cache(600)]
         [HttpGet]
         public async Task<ActionResult<IReadOnlyList<Product>>> GetProducts([FromQuery]ProductSpecificationParams productSpecification)
         {
@@ -39,7 +40,7 @@ namespace API.Controllers
         /// </summary>
         /// <param name="id">The ID of the product to retrieve</param>
         /// <returns>The product with the specified ID if found; otherwise, a 404 Not Found response</returns>
-
+        [Cache(600)]
         [HttpGet("{id:int}")] //api/products/2
         public async Task<ActionResult<Product>> GetProduct(int id)
         {
@@ -57,6 +58,7 @@ namespace API.Controllers
         /// <param name="product">The product to create</param>
         /// <returns>The crated product</returns>
 
+        [InvalidateCache("api/products|")]
         [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult<Product>> CreateProduct(Product product)
@@ -79,7 +81,7 @@ namespace API.Controllers
         /// <param name="id">The ID of the product to update.</param>
         /// <param name="product">The updated product data.</param>
         /// <returns>204 No Content if successful; 400 or 404 if invalid.</returns>
-
+        [InvalidateCache("api/products|")]
         [Authorize(Roles = "Admin")]
         [HttpPut("{id:int}")]
         public async Task<ActionResult> UpdateProduct(int id, Product product)
@@ -104,7 +106,7 @@ namespace API.Controllers
         /// </summary>
         /// <param name="id">The ID of the product to delete</param>
         /// <returns>204 No Content if successful, 404 Not found if product wasnt find</returns>
-        
+        [InvalidateCache("api/products|")]
         [Authorize(Roles = "Admin")]
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> DeleteProduct(int id)
@@ -126,6 +128,7 @@ namespace API.Controllers
         /// Retrives a list of unique product brands
         /// </summary>
         /// <returns> A list of product brand name </returns>
+        [Cache(10000)]
         [HttpGet("brands")]
         public async Task<ActionResult<IReadOnlyList<string>>> GetBrands()
         {
@@ -138,6 +141,7 @@ namespace API.Controllers
         /// Retrives a list of unique product types
         /// </summary>
         /// <returns> A list of product type name </returns>
+        [Cache(10000)]
         [HttpGet("types")]
         public async Task<ActionResult<IReadOnlyList<string>>> GetTypes()
         {
